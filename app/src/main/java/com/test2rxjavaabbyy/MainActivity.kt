@@ -1,15 +1,15 @@
 package com.test2rxjavaabbyy
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.os.FileObserver
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var disposable: CompositeDisposable
+    private var disposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
