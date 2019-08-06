@@ -9,21 +9,25 @@ import com.test2rxjavaabbyy.CodeFileObserver
 import com.test2rxjavaabbyy.Data
 import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableOnSubscribe
+import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.Disposables
+import io.reactivex.observers.DisposableSingleObserver
+import java.io.File
 
 class ObservableFile(val path: String) : ObservableOnSubscribe<Data> {
 
     override fun subscribe(emitter: ObservableEmitter<Data>) {
-        object: FileObserver(path, ALL_EVENTS) {
+        val fileObserver = object: FileObserver(path, ALL_EVENTS) {
             override fun onEvent(code: Int, message: String?) {
-                if (emitter.isDisposed) {
-                    this.stopWatching()
-                    return
-                }
                 when(code) {
                     CREATE -> emitter.onNext(Data(CodeFileObserver.DELETE, message!!))
                     DELETE -> emitter.onNext(Data(CodeFileObserver.DELETE, message!!))
                 }
             }
-        }.startWatching()
+        }
+        fileObserver.startWatching()
+        emitter.setDisposable( Disposables.fromAction {
+            fileObserver.stopWatching()
+        })
     }
 }
